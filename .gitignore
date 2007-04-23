@@ -1,0 +1,5 @@
+*.d
+*.o
+zyxel-revert
+*.log
+*.rom
