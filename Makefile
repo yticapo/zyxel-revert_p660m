@@ -1,11 +1,14 @@
 CFLAGS := -O2 -pipe -Wall
 
-OBJS := configfile.o event.o logging.o
-OBJS += context.o serial.o statemachine.o xmodem.o
+all: zyxel-revert compress decompress
 
-all: zyxel-revert
+zyxel-revert: configfile.o event.o logging.o context.o serial.o statemachine.o xmodem.o zyxel-revert.o
+	$(CC) $(CFLAGS) $^ -o $@
 
-zyxel-revert: $(OBJS) zyxel-revert.o
+compress: lzsc.o filedata.o compress.o
+	$(CC) $(CFLAGS) $^ -o $@
+
+decompress: lzsd.o filedata.o decompress.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 %.o: %.c
@@ -15,7 +18,7 @@ zyxel-revert: $(OBJS) zyxel-revert.o
 	$(CC) $(CFLAGS) -MM -c $< -o $@
 
 clean:
-	rm -f zyxel-revert *.d *.o *.log
+	rm -f zyxel-revert compress decompress *.d *.o *.log
 
 DEPS := $(wildcard *.c)
 -include $(DEPS:.c=.d)
