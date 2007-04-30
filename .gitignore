@@ -1,5 +1,7 @@
 *.d
 *.o
 zyxel-revert
+compress
+decompress
 *.log
 *.rom
