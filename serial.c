@@ -36,7 +36,7 @@ static int open_serial(struct context *ctx, const char *devname)
 	}
 
 	bzero(&sdev->newtio, sizeof(struct termios));
-	sdev->newtio.c_cflag = B9600 | CRTSCTS | CS8 | CLOCAL | CREAD;
+	sdev->newtio.c_cflag = B9600 | CS8 | CLOCAL | CREAD;
 
 	tcflush(ctx->fd, TCIOFLUSH);
 
