@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
 	char outname[64];
 	strncpy(outname, argv[1], sizeof(outname));
-	strcat(outname, ".own_decomp");
+	strcat(outname, ".decomp");
 
 	put_filedata(outname, config);
 

@@ -3,5 +3,6 @@
 zyxel-revert
 compress
 decompress
+cfgpatch
 *.log
 *.rom
