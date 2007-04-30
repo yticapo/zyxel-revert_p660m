@@ -27,7 +27,10 @@ int main(int argc, char *argv[])
 	config_patch(config->data, CFG_PORTNAME_MASK + 1, "PORT-001");
 	config_patch(config->data, CFG_PORTNAME_MASK + 2, "PORT-002");
 
-	put_filedata(argv[2], config);
+	char outname[64];
+	strncpy(outname, argv[1], sizeof(outname));
+	strcat(outname, ".patched");
+	put_filedata(outname, config);
 
 	free(config);
 	return 0;

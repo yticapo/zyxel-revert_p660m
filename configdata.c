@@ -48,6 +48,13 @@ static int patch_ip(void *config, struct cfg_patch *patch, int code, const char 
 	return (inet_pton(AF_INET, parameter, config + patch->offset) <= 0) ? -1 : 0;
 }
 
+static int patch_defaultgw(void *config, struct cfg_patch *patch, int code, const char *parameter)
+{
+	/* metric? */
+	*((uint8_t *)(config + 0x110d)) = 0x02;
+	return patch_ip(config, patch, code, parameter);
+}
+
 static int patch_portname(void *config, struct cfg_patch *patch, int code, const char *parameter)
 {
 	int num = code - patch->code;
@@ -75,7 +82,7 @@ static struct cfg_patch patcharr[] = {{
 	.size = 0x1d,
 }, {
 	.code = CFG_DEFAULTGW,
-	.patch = patch_ip,
+	.patch = patch_defaultgw,
 	.offset = 0x10fc,
 }, {
 	.code = CFG_IPADDRESS,
@@ -100,7 +107,7 @@ static struct cfg_patch patcharr[] = {{
 	.mask = 0xFFFFFFE0,
 	.patch = patch_portname,
 	.offset = 0x336c,
-	.size = 8,
+	.size = 9,
 	.min = 1, .max = 26,
 }};
 

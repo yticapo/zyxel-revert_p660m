@@ -99,12 +99,10 @@ uint32_t lzs_unpack(uint8_t *srcbuf, uint32_t srcsize, uint8_t *dstbuf, uint32_t
 			/* end condition (7bit offset == 0x00) */
 			if (tag == 1 && offset == 0) {
 				/* align src to next byte */
-				if (state.bitcnt > 7)
-					printf("ERROR: alignment?\n");
+				uint32_t cnt = state.bitcnt;
+				uint32_t tmp = get_bits(&state, cnt);
 
-				state.bitcnt = 0;
-
-				printf("=== BLOCK END === \n");
+				printf("=== BLOCK END (align=%d bits=0x%x) === \n", cnt, tmp);
 				get_zyxel_header(&state);
 				state.srcblkstart = state.src;
 				state.dstblkstart = state.dst;
