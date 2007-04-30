@@ -10,10 +10,10 @@
 
 #include "configfile.h"
 #include "context.h"
+#include "filedata.h"
 #include "logging.h"
 
-static char *filedata;
-static int filesize;
+struct filedata *filedata;
 
 enum {
 	XM_SOH = 0x01,
@@ -70,7 +70,7 @@ int xmodem_read(int fd, void *privdata)
 		break;
 
 	case XM_ACK:	/* next packet */
-		if (ctx->lastpkt * 128 == filesize)
+		if (ctx->lastpkt * 128 == filedata->size)
 			return -1;
 
 		pktnum = ctx->lastpkt +1;
@@ -81,12 +81,12 @@ int xmodem_read(int fd, void *privdata)
 		break;
 	}
 
-	if (pktnum * 128 < filesize) {
+	if (pktnum * 128 < filedata->size) {
 		pkt.header = XM_SOH;
 		pkt.count = ((pktnum +1) & 0xFF);
 		pkt.ncount = 0xFF - pkt.count;
 
-		memcpy(pkt.data, filedata + pktnum * 128, 128);
+		memcpy(pkt.data, (void *)(filedata->data) + pktnum * 128, 128);
 
 		calc_crc(&pkt);
 		write(fd, &pkt, sizeof(pkt));
@@ -101,50 +101,14 @@ int xmodem_read(int fd, void *privdata)
 	return 0;
 }
 
-static int load_file_data(const char *filename)
-{
-	int fd = open(filename, O_RDONLY);
-	if (fd < 0) {
-		log_print(LOG_WARN, "load_file_content(): open()");
-		return -1;
-	}
-
-	struct stat filestat;
-	if (fstat(fd, &filestat) < 0) {
-		log_print(LOG_WARN, "load_file_content(): fstat()");
-		close(fd);
-		return -1;
-	}
-
-	filesize = filestat.st_size;
-
-	filedata = malloc(filesize);
-	if (filedata == NULL) {
-		log_print(LOG_WARN, "load_file_content(): malloc()");
-		close(fd);
-		return -1;
-	}
-
-	/* TODO: padding */
-	int readsize = read(fd, filedata, filesize);
-	if (readsize != filesize) {
-		log_print(LOG_WARN, "load_file_content(): read()");
-		free(filedata);
-		close(fd);
-		return -1;
-	}
-
-	close(fd);
-	return 0;
-}
-
 int xmodem_init(void)
 {
 	const char *filename = config_get_string("global", "configdata", NULL);
 	if (filename == NULL)
 		return -1;
 
-	if (load_file_data(filename) < 0)
+	filedata = get_filedata(filename);
+	if (filedata == NULL)
 		return -1;
 
 	return 0;
