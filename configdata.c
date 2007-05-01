@@ -92,7 +92,7 @@ static struct cfg_patch patcharr[] = {{
 	.code = CFG_NETMASK,
 	.patch = patch_8bit,
 	.offset = 0x2dfe,
-	.min = 0x00, .max = 0x20,
+	.min = 0, .max = 32,
 }, {
 	.code = CFG_NAMESERVER,
 	.patch = patch_ip,
@@ -101,7 +101,7 @@ static struct cfg_patch patcharr[] = {{
 	.code = CFG_MACAGEING,
 	.patch = patch_16bit,
 	.offset = 0x53e8,
-	.min = 0, .max = 0xFFFF,
+	.min = 0, .max = 65536,
 }, {
 	.code = CFG_PORTNAME_MASK,
 	.mask = 0xFFFFFFE0,

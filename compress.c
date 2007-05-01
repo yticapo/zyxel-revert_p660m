@@ -8,7 +8,7 @@
 #include "romfile.h"
 
 /*
- * $ compress <rom-0-base> <plain-config> <rom-0-outfile>
+ * $ compress <rom-0-base> <plain-config>
  */
 int main(int argc, char *argv[])
 {
@@ -17,7 +17,10 @@ int main(int argc, char *argv[])
 	struct filedata *config = get_filedata(argv[2]);
 	rom->size = lzs_pack(config->data, config->size, rom->data + 0xC, 0x1000);
 
-	put_romfile(argv[3], rom);
+	char outname[64];
+	strncpy(outname, argv[2], sizeof(outname));
+	strcat(outname, ".comp");
+	put_romfile(outname, rom);
 
 	free(config);
 	free(rom);

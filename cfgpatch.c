@@ -7,7 +7,7 @@
 #include "filedata.h"
 
 /*
- * $ cfgpatch <config-in> <config-out>
+ * $ cfgpatch <config-in>
  */
 int main(int argc, char *argv[])
 {
