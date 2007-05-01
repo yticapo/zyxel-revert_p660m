@@ -88,7 +88,7 @@ uint32_t lzs_unpack(uint8_t *srcbuf, uint32_t srcsize, uint8_t *dstbuf, uint32_t
 		/* Uncompressed byte */
 		if (tag == 0) {
 			*(state.dst)++ = get_bits(&state, 8);
-			printf("uncompressed byte: 0x%02x\n", *(state.dst -1));
+//			printf("uncompressed byte: 0x%02x\n", *(state.dst -1));
 
 		/* Compressed string */
 		} else {
@@ -102,7 +102,7 @@ uint32_t lzs_unpack(uint8_t *srcbuf, uint32_t srcsize, uint8_t *dstbuf, uint32_t
 				uint32_t cnt = state.bitcnt;
 				uint32_t tmp = get_bits(&state, cnt);
 
-				printf("=== BLOCK END (align=%d bits=0x%x) === \n", cnt, tmp);
+//				printf("=== BLOCK END (align=%d bits=0x%x) === \n", cnt, tmp);
 				get_zyxel_header(&state);
 				state.srcblkstart = state.src;
 				state.dstblkstart = state.dst;
@@ -122,7 +122,7 @@ uint32_t lzs_unpack(uint8_t *srcbuf, uint32_t srcsize, uint8_t *dstbuf, uint32_t
 			}
 
 			uint32_t len = get_len(&state);
-			printf("compressed string, offset(%d)=0x%03x len=0x%04x\n", tag, offset, len);
+//			printf("compressed string, offset(%d)=0x%03x len=0x%04x\n", tag, offset, len);
 
 			while (len--)
 				*(state.dst)++ = *dict++;

@@ -49,14 +49,14 @@ static int put_bits(struct lzs_state *state, uint32_t bits, uint32_t len)
 /* TODO: check dstsize */
 static int put_literal_byte(struct lzs_state *state, uint8_t byte)
 {
-	printf("    put_literal_byte: 0x%02x\n", byte);
+//	printf("    put_literal_byte: 0x%02x\n", byte);
 	return put_bits(state, (0 << 8) | byte, 1+8);
 }
 
 /* TODO: check dstsize */
 static int put_compressed_string(struct lzs_state *state, uint32_t offset, uint32_t len)
 {
-	printf("    put_compressed_string: offset=0x%03x len=0x%03x\n", offset, len);
+//	printf("    put_compressed_string: offset=0x%03x len=0x%03x\n", offset, len);
 
 	if (offset > 0x7ff || len > 0x800)
 		printf("      ERROR\n");
@@ -113,7 +113,7 @@ static int put_blockend(struct lzs_state *state)
 	if (state->bitcnt)
 		put_bits(state, 0, 8 - state->bitcnt);
 
-	printf(" =============== BLOCK END =============== \n");
+//	printf(" =============== BLOCK END =============== \n");
 	return 0;
 }
 
@@ -125,7 +125,7 @@ static int put_zyxel_header(struct lzs_state *state)
 	/* remove own header size */
 	lenc -= 4;
 
-	printf("header of previous block: 0x%04x%04x\n", len, lenc);
+//	printf("header of previous block: 0x%04x%04x\n", len, lenc);
 
 	uint8_t *p = state->dstblkstart;
 	p[0] = (len >> 8) & 0xFF;
@@ -234,8 +234,8 @@ int lzs_pack(uint8_t *srcbuf, int srcsize, uint8_t *dstbuf, int dstsize)
 		int key = hash_key_calc(state.src);
 		int maxlen = MIN(state.srcblkstart + 2048, srcbuf + srcsize) - state.src;
 
-		printf("searching for 0x%02x%02x abs=0x%04x key=0x%02x maxlen=%d\n",
-			state.src[0], state.src[1], state.src - srcbuf, key, maxlen);
+//		printf("searching for 0x%02x%02x abs=0x%04x key=0x%02x maxlen=%d\n",
+//			state.src[0], state.src[1], state.src - srcbuf, key, maxlen);
 
 		int bestmatchlen = 0;
 		struct lzs_hash_entry *search, *tmp, *bestmatch = NULL;
@@ -249,7 +249,7 @@ int lzs_pack(uint8_t *srcbuf, int srcsize, uint8_t *dstbuf, int dstsize)
 
 			/* get length of match (min. 2, 0 if collision) */
 			int matchlen = getMatchLen(search->pos, state.src, maxlen);
-			printf("  testing pos=0x%03x has 0x%02x matching bytes\n", (state.src - search->pos), matchlen);
+//			printf("  testing pos=0x%03x has 0x%02x matching bytes\n", (state.src - search->pos), matchlen);
 
 			if (matchlen > bestmatchlen) {
 				bestmatchlen = matchlen;
@@ -259,7 +259,7 @@ int lzs_pack(uint8_t *srcbuf, int srcsize, uint8_t *dstbuf, int dstsize)
 
 		/* found something? */
 		if (bestmatch != NULL) {
-			printf("  selected pos=0x%03x with 0x%02x matching bytes\n", (state.src - bestmatch->pos), bestmatchlen);
+//			printf("  selected pos=0x%03x with 0x%02x matching bytes\n", (state.src - bestmatch->pos), bestmatchlen);
 			put_compressed_string(&state, state.src - bestmatch->pos, bestmatchlen);
 			/* add bytes to history hash */
 			while (bestmatchlen--)
