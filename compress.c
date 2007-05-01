@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
 
 	struct filedata *config = get_filedata(argv[2]);
 	rom->size = lzs_pack(config->data, config->size, rom->data + 0xC, 0x1000);
+	rom->size += 0xC;
 
 	char outname[64];
 	strncpy(outname, argv[2], sizeof(outname));
