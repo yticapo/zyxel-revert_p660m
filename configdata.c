@@ -94,7 +94,6 @@ static int patch_snmp_community(void *config, struct cfg_patch *patch, int code,
 	return 0;
 }
 
-/* TODO: not working "unknown ctl bits" */
 static int patch_portvlan(void *config, struct cfg_patch *patch, int code, const char *parameter)
 {
 	int port = code - patch->code;
@@ -120,6 +119,8 @@ static int patch_portvlan(void *config, struct cfg_patch *patch, int code, const
 /* TODO: not working "unknown ctl bits" */
 static int patch_dot1qvlan(void *config, struct cfg_patch *patch, int code, const char *parameter)
 {
+	return -1;
+
 	int id = code - patch->code;
 	if (id < 1 || id > 32)
 		return -1;
@@ -141,8 +142,11 @@ static int patch_dot1qvlan(void *config, struct cfg_patch *patch, int code, cons
 	return 0;
 }
 
+/* TODO: not working "unknown ctl bits" */
 static int patch_dot1qport(void *config, struct cfg_patch *patch, int code, const char *parameter)
 {
+	return -1;
+
 	int id = code - patch->code;
 	if (id < 1 || id > 32)
 		return -1;
@@ -240,6 +244,11 @@ static struct cfg_patch patcharr[] = {{
 	.patch = patch_16bit,
 	.offset = 0x53e8,
 	.min = 0, .max = 65536,
+}, {
+	.code = CFG_CPUVLANID,
+	.patch = patch_8bit,
+	.offset = 0x5d69,
+	.min = 1, .max = 255,
 }, {
 	.code = CFG_PORTENABLE_MASK,
 	.mask = 0xFFFFFFE0,

@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 	config_patch(config->data, CFG_SNMP_READ_COMMUNITY, "public1234");
 	config_patch(config->data, CFG_SNMP_WRITE_COMMUNITY, "private1234");
 
-	config_patch(config->data, CFG_CPUVLAN, "124");
+	config_patch(config->data, CFG_CPUVLANID, "124");
 
 	config_patch(config->data, CFG_PORTVLAN_MASK + 1, "124:check:all");
 	config_patch(config->data, CFG_PORTVLAN_MASK + 2, "124:nocheck:tagged");
