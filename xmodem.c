@@ -12,8 +12,6 @@
 #include "filedata.h"
 #include "logging.h"
 
-struct filedata *filedata;
-
 enum {
 	XM_SOH = 0x01,
 	XM_EOT = 0x04,
@@ -69,7 +67,7 @@ int xmodem_read(int fd, void *privdata)
 		break;
 
 	case XM_ACK:	/* next packet */
-		if (ctx->lastpkt * 128 == filedata->size)
+		if (ctx->lastpkt * 128 == ctx->file->size)
 			return -1;
 
 		pktnum = ctx->lastpkt +1;
@@ -80,12 +78,12 @@ int xmodem_read(int fd, void *privdata)
 		break;
 	}
 
-	if (pktnum * 128 < filedata->size) {
+	if (pktnum * 128 < ctx->file->size) {
 		pkt.header = XM_SOH;
 		pkt.count = ((pktnum +1) & 0xFF);
 		pkt.ncount = 0xFF - pkt.count;
 
-		memcpy(pkt.data, (void *)(filedata->data) + pktnum * 128, 128);
+		memcpy(pkt.data, (void *)(ctx->file->data) + pktnum * 128, 128);
 
 		calc_crc(&pkt);
 		write(fd, &pkt, sizeof(pkt));
@@ -98,18 +96,4 @@ int xmodem_read(int fd, void *privdata)
 
 	ctx->lastpkt = pktnum;
 	return 0;
-}
-
-int xmodem_init(const char *filename)
-{
-	filedata = get_filedata(filename);
-	if (filedata == NULL)
-		return -1;
-
-	return 0;
-}
-
-void xmodem_close(void)
-{
-	free(filedata);
 }

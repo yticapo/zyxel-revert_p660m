@@ -2,12 +2,13 @@
 #include <string.h>
 
 #include "context.h"
+#include "filedata.h"
 #include "list.h"
 #include "logging.h"
 
 static LIST_HEAD(context_list);
 
-struct context * create_context(void)
+struct context * create_context(const char *filename)
 {
 	struct context *ctx = malloc(sizeof(struct context));
 	if (ctx == NULL) {
@@ -16,6 +17,12 @@ struct context * create_context(void)
 	}
 
 	memset(ctx, 0, sizeof(struct context));
+
+	ctx->file = get_filedata(filename);
+	if (ctx->file == NULL) {
+		free(ctx);
+		return NULL;
+	}
 
 	list_add(&ctx->list, &context_list);
 	return ctx;
@@ -28,6 +35,7 @@ int destroy_context(struct context *ctx)
 	if (ctx->dev_close != NULL)
 		ctx->dev_close(ctx);
 
+	free(ctx->file);
 	free(ctx);
 	return 0;
 }

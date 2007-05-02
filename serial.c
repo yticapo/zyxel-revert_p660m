@@ -79,12 +79,8 @@ static int close_serial(struct context *ctx)
 	return 0;
 }
 
-int serial_init(const char *device)
+int serial_init(struct context *ctx, const char *device)
 {
-	struct context *ctx = create_context();
-	if (ctx == NULL)
-		return -1;
-
 	ctx->dev_privdata = malloc(sizeof(struct serial_device));
 	if (ctx->dev_privdata == NULL) {
 		log_print(LOG_WARN, "serial_init_cb(): out of memory");

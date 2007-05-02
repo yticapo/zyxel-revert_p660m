@@ -1,6 +1,7 @@
 #ifndef _CONTEXT_H_
 #define _CONTEXT_H_
 
+#include "filedata.h"
 #include "list.h"
 
 struct context {
@@ -25,9 +26,11 @@ struct context {
 
 	/* xmodem */
 	int lastpkt;
+
+	struct filedata *file;
 };
 
-struct context * create_context(void);
+struct context * create_context(const char *filename);
 int destroy_context(struct context *ctx);
 
 int context_close(void);

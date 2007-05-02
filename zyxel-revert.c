@@ -8,7 +8,6 @@
 #include "context.h"
 #include "event.h"
 #include "serial.h"
-#include "xmodem.h"
 
 static struct option opts[] = {
 	{"device",	1, 0, 'd'},
@@ -45,17 +44,17 @@ int main(int argc, char *argv[])
 		}
 	} while (code != -1);
 
-	if (devicename == NULL || serial_init(devicename))
+	struct context *ctx = create_context(filename);
+	if (ctx == NULL)
 		exit(1);
 
-	if (filename == NULL || xmodem_init(filename)) {
+	if (devicename == NULL || serial_init(ctx, devicename)) {
 		context_close();
 		exit(1);
 	}
 
 	event_loop();
 
-	xmodem_close();
 	context_close();
 	return 0;
 }
