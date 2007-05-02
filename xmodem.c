@@ -8,7 +8,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "configfile.h"
 #include "context.h"
 #include "filedata.h"
 #include "logging.h"
@@ -101,12 +100,8 @@ int xmodem_read(int fd, void *privdata)
 	return 0;
 }
 
-int xmodem_init(void)
+int xmodem_init(const char *filename)
 {
-	const char *filename = config_get_string("global", "configdata", NULL);
-	if (filename == NULL)
-		return -1;
-
 	filedata = get_filedata(filename);
 	if (filedata == NULL)
 		return -1;

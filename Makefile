@@ -2,7 +2,7 @@ CFLAGS := -O2 -pipe -Wall
 
 all: zyxel-revert compress decompress cfgpatch
 
-zyxel-revert: configfile.o event.o filedata.o logging.o context.o serial.o statemachine.o xmodem.o zyxel-revert.o
+zyxel-revert: event.o filedata.o logging.o context.o serial.o statemachine.o xmodem.o zyxel-revert.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 compress: filedata.o lzsc.o romfile.o compress.o

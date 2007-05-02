@@ -6,7 +6,6 @@
 #include <fcntl.h>
 #include <termios.h>
 
-#include "configfile.h"
 #include "context.h"
 #include "event.h"
 #include "logging.h"
@@ -80,7 +79,7 @@ static int close_serial(struct context *ctx)
 	return 0;
 }
 
-static int serial_init_cb(const char *parameter, void *privdata)
+int serial_init(const char *device)
 {
 	struct context *ctx = create_context();
 	if (ctx == NULL)
@@ -93,7 +92,7 @@ static int serial_init_cb(const char *parameter, void *privdata)
 		return -1;
 	}
 
-	if (open_serial(ctx, parameter) < 0) {
+	if (open_serial(ctx, device) < 0) {
 		free(ctx->dev_privdata);
 		destroy_context(ctx);
 		return -1;
@@ -105,11 +104,5 @@ static int serial_init_cb(const char *parameter, void *privdata)
 	ctx->dev_setbaudrate = setbaudrate;
 
 	ctx->event = event_add_readfd(NULL, ctx->fd, statemachine_read, ctx);
-	return 0;
-}
-
-int serial_init(void)
-{
-	config_get_strings("ports", "serial", serial_init_cb, NULL);
 	return 0;
 }
