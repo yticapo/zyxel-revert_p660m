@@ -55,9 +55,6 @@ static int setbaudrate(struct context *ctx, int baudrate)
 	cfsetispeed(&sdev->newtio, baudrate);
 	cfsetospeed(&sdev->newtio, baudrate);
 
-	/* flush linebuffer */
-	ctx->linepos = 0;
-
 	if (tcsetattr(ctx->fd, TCSANOW, &sdev->newtio) != 0) {
 		log_print(LOG_WARN, "open_serial(): tcsetattr()");
 		close(ctx->fd);

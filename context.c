@@ -18,8 +18,15 @@ struct context * create_context(const char *filename)
 
 	memset(ctx, 0, sizeof(struct context));
 
+	ctx->lbuf = create_linebuffer(256);
+	if (ctx->lbuf == NULL) {
+		free(ctx);
+		return NULL;
+	}
+
 	ctx->file = get_filedata(filename);
 	if (ctx->file == NULL) {
+		free(ctx->lbuf);
 		free(ctx);
 		return NULL;
 	}
@@ -36,6 +43,7 @@ int destroy_context(struct context *ctx)
 		ctx->dev_close(ctx);
 
 	free(ctx->file);
+	free(ctx->lbuf);
 	free(ctx);
 	return 0;
 }

@@ -2,6 +2,7 @@
 #define _CONTEXT_H_
 
 #include "filedata.h"
+#include "linebuffer.h"
 #include "list.h"
 
 struct context {
@@ -21,8 +22,7 @@ struct context {
 	int state;
 
 	/* line buffer */
-	char linebuf[256];
-	int linepos;
+	struct linebuffer *lbuf;
 
 	/* xmodem */
 	int lastpkt;
