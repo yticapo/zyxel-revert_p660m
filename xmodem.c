@@ -62,12 +62,12 @@ int xmodem_read(int fd, void *privdata)
 
 	switch (pkt.header) {
 	case XM_C:	/* first packet */
-		log_print(LOG_DEBUG, "%s: XMODEM started", ctx->devname);
+		log_print(LOG_DEBUG, "%s: XMODEM started (%d bytes)", ctx->devname, ctx->file->size);
 		pktnum = 0;
 		break;
 
 	case XM_ACK:	/* next packet */
-		if (ctx->lastpkt * 128 == ctx->file->size)
+		if (ctx->lastpkt * 128 >= ctx->file->size)
 			return -1;
 
 		pktnum = ctx->lastpkt +1;

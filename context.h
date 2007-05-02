@@ -5,6 +5,10 @@
 #include "linebuffer.h"
 #include "list.h"
 
+#define FLAG_CONFIG 0x01
+#define FLAG_FIRMWARE 0x02
+#define FLAG_SPEEDUP 0x04
+
 struct context {
 	struct list_head list;
 
@@ -20,6 +24,7 @@ struct context {
 
 	/* statemachine */
 	int state;
+	int flags;
 
 	/* line buffer */
 	struct linebuffer *lbuf;

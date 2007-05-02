@@ -75,13 +75,18 @@ int statemachine_read(int fd, void *privdata)
 		/* debug mode entered */
 		} else if (msg == MSG_DEBUG) {
 			/* if device supports it, switch to high baudrate */
-			if (ctx->dev_setbaudrate != NULL) {
+			if ((ctx->flags & FLAG_SPEEDUP) && ctx->dev_setbaudrate != NULL) {
 				ctx->state = STATE_SWITCH_BAUDRATE;
 				write(fd, "ATBA5\r\n", 7);
 
 			} else {
 				ctx->state = STATE_XMODEM;
-				write(fd, "ATLC\r\n", 6);
+
+				if (ctx->flags & FLAG_CONFIG)
+					write(fd, "ATLC\r\n", 6);
+
+				else if (ctx->flags & FLAG_FIRMWARE)
+					write(fd, "ATUR\r\n", 6);
 			}
 
 		/* follow device to high baudrate */
@@ -90,7 +95,12 @@ int statemachine_read(int fd, void *privdata)
 			linebuffer_clear(ctx->lbuf);
 
 			ctx->state = STATE_XMODEM;
-			write(fd, "ATLC\r\n", 6);
+
+			if (ctx->flags & FLAG_CONFIG)
+				write(fd, "ATLC\r\n", 6);
+
+			else if (ctx->flags & FLAG_FIRMWARE)
+				write(fd, "ATUR\r\n", 6);
 
 		/* transfer was success */
 		} else if (msg == MSG_XMODEM_OK && ctx->state == STATE_XMODEM_COMPLETE) {
