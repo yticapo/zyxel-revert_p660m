@@ -1,6 +1,6 @@
 CFLAGS := -O2 -pipe -Wall
 
-all: zyxel-revert compress decompress cfgpatch
+all: zyxel-revert compress decompress cfgpatch show-romheader
 
 zyxel-revert: event.o filedata.o linebuffer.o logging.o context.o serial.o statemachine.o xmodem.o zyxel-revert.o
 	$(CC) $(CFLAGS) $^ -o $@
@@ -12,6 +12,9 @@ decompress: filedata.o lzsd.o romfile.o decompress.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 cfgpatch: configdata.o filedata.o cfgpatch.o
+	$(CC) $(CFLAGS) $^ -o $@
+
+show-romheader: show-romheader.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 %.o: %.c
